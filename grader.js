@@ -45,6 +45,7 @@ var loadChecks = function(checksfile) {
 };
 
 var checkHtmlFile = function(htmlfile, checksfile) {
+    console.log('checking ' + htmlfile)
     $ = cheerioHtmlFile(htmlfile);
     var checks = loadChecks(checksfile).sort();
     var out = {};
@@ -73,14 +74,14 @@ var clone = function(fn) {
 if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
-        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-f, --file <html_file>', 'Path to index.html')
         .option('-u, --url <url>', 'url', handleUrl, 'http://secure-spire-7332.herokuapp.com/')
         .parse(process.argv);
     var checkJson;
     if (program.file != null) {
-        checkJson = checkHtmlFile('temp.html', program.checks);
-    } else {
         checkJson = checkHtmlFile(program.file, program.checks);
+    } else {
+        checkJson = checkHtmlFile('temp.html', program.checks);
     }
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
